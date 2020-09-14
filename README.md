@@ -1,1 +1,1 @@
-# NameTheCityGame_telegramBot
+Телеграм бот для игры в города.
