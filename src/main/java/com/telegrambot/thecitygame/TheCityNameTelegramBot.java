@@ -1,13 +1,12 @@
 package com.telegrambot.thecitygame;
 
+import com.telegrambot.thecitygame.bot.TelegramReplier;
 import lombok.AccessLevel;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TheCityNameTelegramBot extends TelegramWebhookBot {
@@ -16,19 +15,16 @@ public class TheCityNameTelegramBot extends TelegramWebhookBot {
     String botUserName;
     String botToken;
 
+    final TelegramReplier telegramReplier;
+
+    public TheCityNameTelegramBot(DefaultBotOptions options, TelegramReplier telegramReplier) {
+        super(options);
+        this.telegramReplier = telegramReplier;
+    }
+
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        if (update.getMessage() != null && update.getMessage().hasText()) {
-            long chat_id = update.getMessage().getChatId();
-
-            try {
-                execute(new SendMessage(chat_id, "Hi " + update.getMessage().getText()));
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return null;
+        return telegramReplier.handleUpdate(update);
     }
 
     @Override
